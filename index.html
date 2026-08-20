@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Báo cáo kết quả kiểm tra HSK3 & HSKK Sơ cấp - Ngọc Châu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;700;900&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F5F1E7;
+    --paper-raised:#FBF9F4;
+    --ink:#1E2A3D;
+    --ink-soft:#3A4759;
+    --seal:#A63D2F;
+    --seal-soft:#C9614F;
+    --gold:#B7935B;
+    --gold-line:rgba(183,147,91,.35);
+    --muted:#6B6F78;
+    --pass:#3F6B4F;
+    --pass-bg:#E7EEE8;
+    --fail:#A63D2F;
+    --fail-bg:#F5E8E5;
+    --pending:#8C8368;
+    --pending-bg:#EFEADC;
+    --radius:14px;
+    --shadow:0 12px 32px -18px rgba(30,42,61,.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    background:
+      radial-gradient(1200px 500px at 10% -10%, rgba(183,147,91,.10), transparent 60%),
+      radial-gradient(1000px 500px at 100% 0%, rgba(166,61,47,.06), transparent 55%),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    font-size:18.5px;
+    line-height:1.75;
+    min-height:100vh;
+    padding:32px 62px 64px;
+    overflow-x:hidden;
+    width:100%;
+  }
+  .wrap{max-width:1680px;margin:0 auto;width:100%;}
+
+  /* ---------- Header : certificate style ---------- */
+  header{
+    position:relative;
+    background:var(--paper-raised);
+    border:1px solid var(--gold-line);
+    border-radius:var(--radius);
+    padding:36px 26px 30px;
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    margin-bottom:22px;
+  }
+  header::before, header::after{
+    content:"";
+    position:absolute;
+    left:22px; right:22px;
+    height:1px;
+    background:linear-gradient(90deg,transparent, var(--gold) 15%, var(--gold) 85%, transparent);
+  }
+  header::before{top:10px;}
+  header::after{bottom:10px;}
+  .eyebrow{
+    font-size:13.5px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:700;
+    margin:6px 0 10px;
+  }
+  h1{
+    font-family:'Noto Serif SC',serif;
+    font-weight:900;
+    font-size:clamp(28px,4.6vw,42px);
+    margin:0 0 10px;
+    color:var(--ink);
+    letter-spacing:.01em;
+  }
+  h1 .zh{font-size:.72em;color:var(--ink-soft);font-weight:700;margin-left:10px;}
+  .sub{
+    font-size:18px;
+    line-height:1.7;
+    color:var(--muted);
+    margin:0;
+    max-width:80ch;
+  }
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 28px;
+    margin-top:18px;
+    padding-top:16px;
+    border-top:1px dashed var(--gold-line);
+    font-size:16.5px;
+    color:var(--ink-soft);
+  }
+  .meta-row b{color:var(--ink);font-weight:700;}
+  .meta-row span{white-space:nowrap;}
+
+  /* seal / signature element */
+  .seal{
+    position:absolute;
+    top:26px; right:30px;
+    width:78px;height:78px;
+    border:3px solid var(--seal);
+    border-radius:10px;
+    color:var(--seal);
+    display:flex;align-items:center;justify-content:center;
+    transform:rotate(-8deg);
+    font-family:'Noto Serif SC',serif;
+    font-weight:900;
+    font-size:26px;
+    line-height:1.05;
+    text-align:center;
+    opacity:.9;
+    mix-blend-mode:multiply;
+    box-shadow: inset 0 0 0 3px rgba(166,61,47,.08);
+  }
+  .seal small{display:block;font-size:9px;letter-spacing:.05em;font-weight:700;margin-top:2px;}
+
+  /* ---------- Student tabs (folder nameplates) ---------- */
+  .student-tabs{
+    display:flex;
+    gap:8px;
+    margin:0 0 -1px;
+    padding:0 4px;
+  }
+  .student-tab{
+    flex:1;
+    appearance:none;
+    border:1px solid var(--gold-line);
+    border-bottom:none;
+    background:rgba(245,241,231,.6);
+    color:var(--ink-soft);
+    font-family:'Noto Serif SC',serif;
+    font-weight:700;
+    font-size:20px;
+    padding:15px 18px 17px;
+    border-radius:12px 12px 0 0;
+    cursor:pointer;
+    transition:background .18s ease, color .18s ease, transform .18s ease;
+    letter-spacing:.01em;
+  }
+  .student-tab .role{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+    color:var(--muted);
+    margin-bottom:4px;
+  }
+  .student-tab.active{
+    background:var(--paper-raised);
+    color:var(--ink);
+    border-color:var(--gold-line);
+    box-shadow:0 -6px 18px -14px rgba(30,42,61,.4);
+  }
+  .student-tab.active .role{color:var(--seal);}
+  .student-tab:not(.active):hover{background:rgba(251,249,244,.7);}
+
+  .student-panel{display:none;}
+  .student-panel.active{display:block;}
+
+  .folder{
+    background:var(--paper-raised);
+    border:1px solid var(--gold-line);
+    border-radius:0 12px 12px 12px;
+    box-shadow:var(--shadow);
+    padding:32px 24px 36px;
+  }
+
+  /* ---------- Sub tabs HSK / HSKK ---------- */
+  .subtabs{
+    display:inline-flex;
+    background:rgba(30,42,61,.05);
+    border-radius:999px;
+    padding:4px;
+    gap:4px;
+    margin-bottom:22px;
+  }
+  .subtab{
+    appearance:none;border:none;background:transparent;
+    padding:11px 24px;
+    border-radius:999px;
+    font-family:'Inter',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    letter-spacing:.03em;
+    color:var(--muted);
+    cursor:pointer;
+    transition:all .18s ease;
+  }
+  .subtab.active{
+    background:var(--ink);
+    color:var(--paper-raised);
+    box-shadow:0 4px 12px -4px rgba(30,42,61,.5);
+  }
+
+  .sub-panel{display:none;}
+  .sub-panel.active{display:block;}
+
+  /* ---------- Score sections ---------- */
+  .section-title{
+    display:flex;
+    align-items:baseline;
+    gap:10px;
+    margin:0 0 14px;
+  }
+  .section-title h2{
+    font-family:'Noto Serif SC',serif;
+    font-size:22.5px;
+    margin:0;
+    color:var(--ink);
+  }
+  .section-title .zh-tag{
+    font-size:15px;
+    color:var(--gold);
+    font-weight:700;
+    letter-spacing:.03em;
+  }
+
+  .score-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+    gap:14px;
+    margin-bottom:18px;
+  }
+  .score-card{
+    border:1px solid var(--gold-line);
+    border-radius:10px;
+    padding:16px 18px;
+    background:rgba(245,241,231,.4);
+  }
+  .score-card .label{
+    font-size:14.5px;
+    color:var(--muted);
+    font-weight:600;
+    letter-spacing:.02em;
+    margin-bottom:7px;
+  }
+  .score-card .value{
+    font-family:'Noto Serif SC',serif;
+    font-size:29px;
+    font-weight:700;
+    color:var(--ink);
+  }
+  .score-card .value .max{
+    font-size:16px;
+    color:var(--muted);
+    font-weight:500;
+    font-family:'Inter',sans-serif;
+  }
+  .score-card.total{
+    background:var(--paper);
+    border-color:var(--gold);
+  }
+  .score-card.total .value{color:var(--seal);}
+
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:15.5px;
+    font-weight:700;
+    padding:7px 16px;
+    border-radius:999px;
+    margin-bottom:20px;
+  }
+  .status-pill.pending{background:var(--pending-bg);color:var(--pending);}
+  .status-pill.pass{background:var(--pass-bg);color:var(--pass);}
+  .status-pill.fail{background:var(--fail-bg);color:var(--fail);}
+  .status-pill::before{content:"●";font-size:8px;}
+
+  .note-box{
+    border:1px dashed var(--gold-line);
+    border-radius:10px;
+    padding:18px 20px;
+    font-size:16.5px;
+    color:var(--muted);
+    line-height:1.8;
+    background:rgba(255,255,255,.3);
+  }
+  .note-box b{color:var(--ink-soft);}
+
+  /* ---------- Point conversion band ---------- */
+  .point-band{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:10px 26px;
+    border:1px solid var(--gold-line);
+    border-radius:10px;
+    padding:14px 18px;
+    margin-bottom:18px;
+    background:linear-gradient(90deg, rgba(183,147,91,.08), transparent 60%);
+  }
+  .point-band .pb-item{font-size:16.5px;color:var(--ink-soft);}
+  .point-band .pb-item b{
+    font-family:'Noto Serif SC',serif;
+    font-size:20px;
+    color:var(--ink);
+    margin-left:4px;
+  }
+  .point-band .pb-total{
+    margin-left:auto;
+    font-size:16.5px;
+    color:var(--muted);
+    display:flex;
+    align-items:center;
+    gap:10px;
+  }
+  .point-band .pb-total b{
+    font-family:'Noto Serif SC',serif;
+    font-size:30px;
+    color:var(--seal);
+  }
+  .result-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:.04em;
+    padding:7px 17px;
+    border-radius:999px;
+    text-transform:uppercase;
+  }
+  .result-badge.pass{background:var(--pass-bg);color:var(--pass);}
+  .result-badge.fail{background:var(--fail-bg);color:var(--fail);}
+
+  /* ---------- Detailed error breakdown ---------- */
+  .error-block{margin-bottom:22px;}
+  .error-block-title{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:6px 14px;
+    font-family:'Noto Serif SC',serif;
+    font-size:19px;
+    font-weight:700;
+    color:var(--ink);
+    padding-bottom:9px;
+    margin-bottom:14px;
+    border-bottom:1px solid var(--gold-line);
+  }
+  .error-block-title .eb-summary{
+    font-family:'Inter',sans-serif;
+    font-size:15px;
+    font-weight:600;
+    color:var(--muted);
+  }
+  .part-row{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:8px;
+    font-size:16.5px;
+    color:var(--ink-soft);
+    margin:0 0 10px;
+  }
+  .part-row b{color:var(--ink);font-family:'Noto Serif SC',serif;}
+  .pass-inline{
+    display:inline-flex;
+    align-items:center;
+    gap:4px;
+    font-size:14.5px;
+    font-weight:700;
+    color:var(--pass);
+    background:var(--pass-bg);
+    padding:4px 12px;
+    border-radius:999px;
+  }
+  .correct-block{
+    font-size:15.5px;
+    color:var(--pass);
+    background:var(--pass-bg);
+    border-radius:8px;
+    padding:13px 17px;
+    margin:0 0 18px;
+    line-height:1.75;
+  }
+  .correct-block b{color:var(--pass);}
+
+  .error-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:12px;
+    margin:0 0 16px;
+  }
+  .error-cards.stacked{grid-template-columns:1fr;}
+  .error-card{
+    border:1.5px solid var(--fail);
+    border-radius:10px;
+    padding:13px 16px;
+    background:var(--fail-bg);
+  }
+  .error-card.partial{border-color:var(--gold);background:rgba(183,147,91,.10);}
+  .error-card.blank{border-color:var(--pending);background:var(--pending-bg);}
+  .error-card .ec-top{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:8px;
+  }
+  .error-card .ec-num{
+    font-family:'Noto Serif SC',serif;
+    font-weight:800;
+    font-size:18px;
+    color:var(--ink);
+  }
+  .error-card .ec-badge{
+    font-size:12.5px;
+    font-weight:800;
+    padding:5px 11px;
+    border-radius:999px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:#fff;
+    background:var(--fail);
+  }
+  .error-card.partial .ec-badge{background:var(--gold);}
+  .error-card.blank .ec-badge{background:var(--pending);}
+  .error-card .ec-body{font-size:16px;color:var(--ink-soft);line-height:1.8;}
+  .error-card .ec-body .vs{display:flex;gap:6px;margin-bottom:5px;flex-wrap:wrap;}
+  .error-card .ec-body .vs .k{color:var(--muted);min-width:110px;flex-shrink:0;font-size:14.5px;}
+  .error-card .ec-body .wrongval{color:var(--fail);font-weight:700;}
+  .error-card.partial .ec-body .wrongval{color:var(--gold);}
+  .error-card .ec-body .rightval{color:var(--pass);font-weight:700;}
+  .error-card .ec-note{
+    margin-top:10px;
+    padding-top:10px;
+    border-top:1px dashed var(--gold-line);
+    font-size:15.5px;
+    color:var(--ink-soft);
+  }
+  .error-card .ec-note b{color:var(--ink);}
+  .callout{
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+    border-radius:10px;
+    padding:16px 19px;
+    font-size:16px;
+    line-height:1.8;
+    color:var(--ink-soft);
+    background:var(--pending-bg);
+    border:1px solid var(--gold-line);
+    margin-bottom:18px;
+  }
+  .callout .ci{font-size:19px;line-height:1;}
+
+  /* ---------- Transcript box + labeled note tags (readability) ---------- */
+  .transcript-box{
+    margin-top:10px;
+    padding:14px 16px;
+    background:var(--paper);
+    border:1px dashed var(--gold-line);
+    border-radius:8px;
+  }
+  .transcript-box .tb-label{
+    display:block;
+    font-family:'Inter',sans-serif;
+    font-size:11.5px;
+    font-weight:800;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    color:var(--gold);
+    margin-bottom:8px;
+  }
+  .transcript-box .tb-text{
+    font-family:'Noto Serif SC',serif;
+    font-size:16px;
+    line-height:2;
+    color:var(--ink);
+  }
+  .note-tag{
+    display:inline-block;
+    font-size:11px;
+    font-weight:800;
+    letter-spacing:.05em;
+    text-transform:uppercase;
+    padding:3px 10px;
+    border-radius:6px;
+    margin-bottom:8px;
+  }
+  .note-tag.grammar{background:var(--fail-bg);color:var(--fail);}
+  .note-tag.pronun{background:var(--pending-bg);color:var(--pending);}
+  .note-tag.fluency{background:var(--pending-bg);color:var(--pending);}
+  .note-tag.critical{background:var(--fail);color:#fff;}
+  .error-card .ec-note{position:relative;}
+  .error-card .ec-note.tagged{padding-top:2px;}
+  .error-card .ec-note.critical-note{
+    background:var(--fail-bg);
+    border-top:none;
+    border-radius:8px;
+    padding:12px 14px;
+  }
+  .error-card .ec-note.fluency-note{
+    background:var(--pending-bg);
+    border-top:none;
+    border-radius:8px;
+    padding:12px 14px;
+    margin-top:10px;
+  }
+  .qcard-divider{
+    border:none;
+    border-top:1px dashed var(--gold-line);
+    margin:20px 0;
+  }
+
+  /* ---------- HSKK video blocks (YouTube embed) ---------- */
+  .video-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+    gap:16px;
+    margin-bottom:20px;
+  }
+  .video-card{
+    border:1px solid var(--gold-line);
+    border-radius:12px;
+    padding:14px;
+    background:var(--paper-raised);
+  }
+  .video-card .vc-title{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:10px;
+  }
+  .video-card .vc-title b{
+    font-family:'Noto Serif SC',serif;
+    font-size:15px;
+    color:var(--ink);
+  }
+  .video-card .vc-title span{
+    font-size:12.5px;
+    color:var(--muted);
+  }
+  .video-card .vc-embed{
+    position:relative;
+    width:100%;
+    aspect-ratio:16/9;
+    border-radius:8px;
+    overflow:hidden;
+    background:#000;
+  }
+  .video-card .vc-embed iframe{
+    position:absolute;
+    top:0; left:0;
+    width:100%;
+    height:100%;
+    border:0;
+  }
+  .video-card .vc-fallback{
+    font-size:13px;
+    color:var(--muted);
+    margin-top:7px;
+    line-height:1.6;
+    word-break:break-all;
+  }
+
+  .empty-state{
+    text-align:center;
+    padding:40px 20px;
+    color:var(--muted);
+    font-size:15px;
+    border:1px dashed var(--gold-line);
+    border-radius:12px;
+    background:rgba(255,255,255,.3);
+  }
+  .empty-state .icon{
+    font-size:30px;
+    margin-bottom:9px;
+    opacity:.6;
+  }
+
+  footer{
+    text-align:center;
+    font-size:13.5px;
+    color:var(--muted);
+    margin-top:28px;
+    letter-spacing:.02em;
+  }
+
+  @media (max-width:720px){
+    body{font-size:16.5px;line-height:1.7;padding:20px 30px 48px;}
+    header{padding:22px 18px 20px;}
+    .seal{width:56px;height:56px;font-size:18px;top:18px;right:16px;}
+    .folder{padding:18px 16px 22px;}
+    .student-tab{font-size:16px;padding:12px 10px 14px;}
+    h1{font-size:clamp(22px,6vw,30px);}
+    .sub{font-size:15.5px;}
+    .meta-row{font-size:14.5px;gap:8px 18px;}
+    .section-title h2{font-size:19px;}
+    .score-grid{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));}
+    .score-card .value{font-size:24px;}
+    .point-band{gap:8px 16px;padding:12px 14px;}
+    .point-band .pb-total{margin-left:0;width:100%;justify-content:space-between;}
+    .error-card .ec-body .vs{gap:4px;}
+    .error-card .ec-body .vs .k{min-width:auto;}
+  }
+
+  @media (max-width:400px){
+    body{font-size:15.5px;padding:16px 22px 40px;}
+    .folder{padding:14px 12px 18px;}
+    h1{font-size:clamp(20px,7vw,26px);}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="seal">印<small>已批阅</small></div>
+    <div class="eyebrow">Thông báo kết quả kiểm tra</div>
+    <h1>Báo cáo kết quả kiểm tra <span class="zh">成绩单</span></h1>
+    <p class="sub">Tổng hợp kết quả bài kiểm tra HSK3 và HSKK Sơ cấp — chấm theo đề gốc và đáp án chuẩn.</p>
+    <div class="meta-row">
+      <span>Kỳ kiểm tra: <b id="meta-date">—</b></span>
+      <span>Giáo viên chấm: <b>Hà Thái</b></span>
+      <span>Học sinh: <b>Ngọc Châu</b></span>
+    </div>
+  </header>
+
+  <!-- ================= NGỌC CHÂU ================= -->
+  <div id="panel-ngocchau">
+    <div class="folder">
+      <div class="subtabs">
+        <button class="subtab active" data-sub="hsk" data-student="ngocchau">HSK3</button>
+        <button class="subtab" data-sub="hskk" data-student="ngocchau">HSKK Sơ cấp</button>
+      </div>
+
+      <!-- HSK panel -->
+      <div class="sub-panel active" id="ngocchau-hsk">
+        <div class="section-title"><h2>Kết quả HSK3</h2><span class="zh-tag">听力 · 阅读 · 书写</span></div>
+        <span class="status-pill pass">Đã chấm đủ 3 phần</span>
+        <div class="score-grid">
+          <div class="score-card"><div class="label">听力 Nghe hiểu</div><div class="value">33<span class="max">/ 40 câu đúng</span></div></div>
+          <div class="score-card"><div class="label">阅读 Đọc hiểu</div><div class="value">30<span class="max">/ 30 câu đúng</span></div></div>
+          <div class="score-card"><div class="label">书写 Viết</div><div class="value">6.75<span class="max">/ 10 câu đúng*</span></div></div>
+          <div class="score-card total"><div class="label">Tổng câu đúng</div><div class="value">69.75<span class="max">/ 80*</span></div></div>
+        </div>
+        <div class="point-band">
+          <span class="pb-item">听力 <b>82.5</b> đ</span>
+          <span class="pb-item">阅读 <b>100</b> đ</span>
+          <span class="pb-item">书写 <b>65</b> đ</span>
+          <span class="pb-total">Tổng điểm quy đổi (/300)<b>247.5</b><span class="result-badge pass">Đậu</span></span>
+        </div>
+        <div class="error-block">
+          <div class="error-block-title">听力 Nghe hiểu<span class="eb-summary">33 / 40 câu đúng</span></div>
+          <div class="part-row"><b>第一部分 (câu 1–10)</b><span class="pass-inline">10/10 ✓ đúng toàn bộ</span></div>
+          <div class="part-row"><b>第二部分 (câu 11–20)</b> — 7/10 đúng, 3 câu sai</div>
+          <div class="error-cards">
+            <div class="error-card"><div class="ec-top"><span class="ec-num">Câu 12</span><span class="ec-badge">Sai</span></div><div class="ec-body"><div class="vs"><span class="k">Học sinh chọn</span><span class="wrongval">√</span></div><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">×</span></div></div></div>
+            <div class="error-card"><div class="ec-top"><span class="ec-num">Câu 16</span><span class="ec-badge">Sai</span></div><div class="ec-body"><div class="vs"><span class="k">Học sinh chọn</span><span class="wrongval">√</span></div><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">×</span></div></div></div>
+            <div class="error-card"><div class="ec-top"><span class="ec-num">Câu 17</span><span class="ec-badge">Sai</span></div><div class="ec-body"><div class="vs"><span class="k">Học sinh chọn</span><span class="wrongval">√</span></div><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">×</span></div></div></div>
+          </div>
+          <div class="part-row"><b>第三部分 (câu 21–30)</b> — 8/10 đúng, 2 câu sai</div>
+          <div class="error-cards">
+            <div class="error-card"><div class="ec-top"><span class="ec-num">Câu 24</span><span class="ec-badge">Sai</span></div><div class="ec-body"><div class="vs"><span class="k">Học sinh chọn</span><span class="wrongval">C</span></div><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">A</span></div></div></div>
+            <div class="error-card"><div class="ec-top"><span class="ec-num">Câu 28</span><span class="ec-badge">Sai</span></div><div class="ec-body"><div class="vs"><span class="k">Học sinh chọn</span><span class="wrongval">A</span></div><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">C</span></div></div></div>
+          </div>
+          <div class="part-row"><b>第四部分 (câu 31–40)</b> — 8/10 đúng, 2 câu sai</div>
+          <div class="error-cards">
+            <div class="error-card"><div class="ec-top"><span class="ec-num">Câu 34</span><span class="ec-badge">Sai</span></div><div class="ec-body"><div class="vs"><span class="k">Học sinh chọn</span><span class="wrongval">A</span></div><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">C</span></div></div></div>
+            <div class="error-card"><div class="ec-top"><span class="ec-num">Câu 39</span><span class="ec-badge">Sai</span></div><div class="ec-body"><div class="vs"><span class="k">Học sinh chọn</span><span class="wrongval">B</span></div><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">A</span></div></div></div>
+          </div>
+          <div class="callout"><span class="ci">💡</span><span>Lưu ý cho học sinh: cả 5 câu sai của phần nghe đều rơi vào <b>第二部分 (đúng/sai)</b> và các đoạn hội thoại dài ở <b>第三, 第四部分</b> — nên luyện nghe kỹ các từ phủ định/khẳng định dễ gây nhiễu và luyện nghe đoạn dài không bỏ sót chi tiết.</span></div>
+        </div>
+
+        <div class="error-block">
+          <div class="error-block-title">阅读 Đọc hiểu<span class="eb-summary">30 / 30 câu đúng</span></div>
+          <div class="part-row"><b>第一部分 (câu 41–50)</b><span class="pass-inline">10/10 ✓ đúng toàn bộ</span></div>
+          <div class="part-row"><b>第二部分 (câu 51–60)</b><span class="pass-inline">10/10 ✓ đúng toàn bộ</span></div>
+          <div class="part-row"><b>第三部分 (câu 61–70)</b><span class="pass-inline">10/10 ✓ điểm tuyệt đối 🎯</span></div>
+          <div class="callout"><span class="ci">🌟</span><span>Khen ngợi học sinh: đọc hiểu đạt điểm tuyệt đối cả 3 phần — đây là điểm mạnh rõ rệt, nên tiếp tục duy trì và có thể nâng độ khó bài đọc để phát triển thêm.</span></div>
+        </div>
+
+        <div class="error-block">
+          <div class="error-block-title">书写 Viết<span class="eb-summary">6.75 / 10 câu đúng — 65 / 100 đ</span></div>
+          <div class="part-row"><b>第一部分 sắp xếp câu (câu 71–75)</b> — 2.75/5 đúng</div>
+          <div class="error-cards stacked">
+            <div class="error-card">
+              <div class="ec-top"><span class="ec-num">Câu 71</span><span class="ec-badge">Sai</span></div>
+              <div class="ec-body">
+                <div class="vs"><span class="k">Học sinh viết</span><span class="wrongval">应该打算做早一点儿</span></div>
+                <div class="vs"><span class="k">Đáp án mẫu</span><span class="rightval">应该早一点儿做打算</span></div>
+                <div class="ec-note"><b>Lỗi:</b> sai vị trí trạng ngữ chỉ thời gian "早一点儿" — cần đặt trước động từ 做, không đặt sau tân ngữ 打算.</div>
+              </div>
+            </div>
+            <div class="error-card partial">
+              <div class="ec-top"><span class="ec-num">Câu 72</span><span class="ec-badge">3/4 điểm</span></div>
+              <div class="ec-body">
+                <div class="vs"><span class="k">Học sinh viết</span><span class="wrongval">...吗？(kết thúc bằng 。)</span></div>
+                <div class="vs"><span class="k">Đáp án mẫu</span><span class="rightval">kết thúc bằng ？</span></div>
+                <div class="ec-note"><b>Lỗi:</b> trật tự từ và ngữ pháp đúng khớp đáp án mẫu, chỉ sai dấu câu cuối (dùng "。" thay vì "？"). Trừ nhẹ vì đây là lỗi hình thức, không ảnh hưởng kỹ năng sắp xếp câu.</div>
+              </div>
+            </div>
+            <div class="error-card">
+              <div class="ec-top"><span class="ec-num">Câu 75</span><span class="ec-badge">Sai</span></div>
+              <div class="ec-body">
+                <div class="vs"><span class="k">Học sinh viết</span><span class="wrongval">...可以舒服。</span></div>
+                <div class="vs"><span class="k">Đáp án mẫu</span><span class="rightval">...可以舒服一些。</span></div>
+                <div class="ec-note"><b>Lỗi:</b> thiếu từ bổ nghĩa "一些" ở cuối câu — cần nhắc học sinh soát lại đã dùng hết các từ cho sẵn trong đề chưa trước khi nộp.</div>
+              </div>
+            </div>
+          </div>
+          <div class="correct-block">✓ Câu <b>73, 74</b>: đúng khớp đáp án mẫu.</div>
+
+          <div class="part-row"><b>第二部分 điền chữ Hán (câu 76–80)</b> — 4/5 đúng</div>
+          <div class="error-cards">
+            <div class="error-card blank"><div class="ec-top"><span class="ec-num">Câu 78</span><span class="ec-badge">Bỏ trống</span></div><div class="ec-body"><div class="vs"><span class="k">Đáp án đúng</span><span class="rightval">健</span></div></div></div>
+          </div>
+          <div class="correct-block">✓ Câu <b>76 (晴), 77 (鲜), 79 (热), 80 (响)</b>: đều đúng.</div>
+          <div class="callout"><span class="ci">💡</span><span>Lưu ý cho học sinh: phần lớn lỗi ở 书写 là <b>thiếu từ/dấu câu</b> chứ không phải sai kiến thức ngữ pháp gốc — nên rèn thói quen đọc lại câu sau khi viết xong để kiểm tra đã dùng đủ từ cho sẵn và đúng dấu câu kết thúc câu (khẳng định "。" hay nghi vấn "？").</span></div>
+        </div>
+      </div>
+
+      <!-- HSKK panel -->
+      <div class="sub-panel" id="ngocchau-hskk">
+        <div class="section-title"><h2>Kết quả HSKK Sơ cấp</h2><span class="zh-tag">听后重复 · 听后回答 · 回答问题</span></div>
+        <span class="status-pill pass">Đã chấm đủ 3 phần</span>
+        <div class="score-grid">
+          <div class="score-card"><div class="label">Phần 1: Nghe & nhắc lại</div><div class="value">30<span class="max">/ 30</span></div></div>
+          <div class="score-card"><div class="label">Phần 2: Nghe & trả lời</div><div class="value">24.5<span class="max">/ 30</span></div></div>
+          <div class="score-card"><div class="label">Phần 3: Trả lời câu hỏi</div><div class="value">25<span class="max">/ 40</span></div></div>
+          <div class="score-card total"><div class="label">Tổng điểm</div><div class="value">79.5<span class="max">/ 100</span></div></div>
+        </div>
+
+        <div class="video-grid">
+          <div class="video-card">
+            <div class="vc-title"><b>Phần 1 · 听后重复</b><span>Nghe & nhắc lại</span></div>
+            <div class="vc-embed">
+              <iframe src="https://www.youtube.com/embed/oO95Xa-9B4g" title="Ngọc Châu - HSKK Phần 1" allowfullscreen></iframe>
+            </div>
+            <div class="vc-fallback">Link: <code>https://youtu.be/oO95Xa-9B4g</code></div>
+          </div>
+          <div class="video-card">
+            <div class="vc-title"><b>Phần 2 · 听后回答</b><span>Nghe & trả lời</span></div>
+            <div class="vc-embed">
+              <iframe src="https://www.youtube.com/embed/UonCnVZFxi0" title="Ngọc Châu - HSKK Phần 2" allowfullscreen></iframe>
+            </div>
+            <div class="vc-fallback">Link: <code>https://youtu.be/UonCnVZFxi0</code></div>
+          </div>
+          <div class="video-card">
+            <div class="vc-title"><b>Phần 3 · 回答问题</b><span>Trả lời câu hỏi</span></div>
+            <div class="vc-embed">
+              <iframe src="https://www.youtube.com/embed/fRPo99o1yKY" title="Ngọc Châu - HSKK Phần 3" allowfullscreen></iframe>
+            </div>
+            <div class="vc-fallback">Link: <code>https://youtu.be/fRPo99o1yKY</code></div>
+          </div>
+        </div>
+
+        <div class="error-block">
+          <div class="error-block-title">Phần 1 · 听后重复 (Nghe & nhắc lại)<span class="eb-summary">30 / 30 điểm 🎯</span></div>
+          <div class="callout"><span class="ci">🌟</span><span>Nhận xét: <b>Tốt</b> — đạt điểm tuyệt đối. Lưu ý luyện thêm <b>thanh 4</b> để phát âm dứt khoát hơn, tránh nhầm với <b>thanh 1</b> (thanh 4 xuống nhanh - dứt điểm, thanh 1 giữ đều - kéo dài).</span></div>
+        </div>
+        <div class="error-block">
+          <div class="error-block-title">Phần 2 · 听后回答 (Nghe & trả lời)<span class="eb-summary">24.5 / 30 điểm</span></div>
+          <div class="error-cards stacked">
+            <div class="error-card">
+              <div class="ec-top"><span class="ec-num">Câu 18</span><span class="ec-badge">Sai</span></div>
+              <div class="ec-body">
+                <div class="ec-note"><b>Lỗi:</b> nhầm lẫn từ khóa chỉ đơn vị. Đề hỏi số tháng (<b>月</b>), nhưng câu trả lời lại nêu số ngày (<b>天</b>).</div>
+              </div>
+            </div>
+            <div class="error-card">
+              <div class="ec-top"><span class="ec-num">Câu 19</span><span class="ec-badge">Sai</span></div>
+              <div class="ec-body">
+                <div class="ec-note"><b>Lỗi:</b> cách dùng từ chưa tự nhiên. Cụm <b>对...感兴趣</b> (có hứng thú với) thường dùng cho sở thích, môn học hoặc lĩnh vực; không phù hợp khi nói về thức ăn, hoa quả.</div>
+              </div>
+            </div>
+          </div>
+          <div class="callout"><span class="ci">💡</span><span>Lưu ý cho học sinh: trả lời <b>ngắn gọn, trong 1 câu</b> — đề hỏi gì trả lời đó, không dài dòng. Chú ý phân biệt <b>thanh 4</b> và <b>thanh 1</b> khi phát âm.</span></div>
+        </div>
+        <div class="error-block">
+          <div class="error-block-title">Phần 3 · 回答问题 (Trả lời câu hỏi)<span class="eb-summary">25 / 40 điểm</span></div>
+
+          <div class="part-row"><b>Câu 26</b></div>
+          <div class="error-cards stacked">
+            <div class="error-card partial">
+              <div class="ec-top"><span class="ec-num">Câu 26</span><span class="ec-badge">14/20 điểm</span></div>
+              <div class="ec-body">
+                <div class="ec-note"><b>Bài gốc học sinh nói:</b><br>
+                平时，我不高兴，是……因为成绩不太好，或者有不喜欢的事。所以不高性...时，我会做很多……很多事。第一，我就跟妈妈聊聊天，因为跟妈妈聊天让我觉得很高兴，……也能让我忘记不高兴的事情。第二，我会吃很多好吃的东西。因为别人常常说，好吃的东西一定使你更…… 更舒服。第三，我喜欢一个人看书或者听音乐，这样能让我觉得很安静，也很快乐。生活……每个人生活，有高兴的事，也有不高兴的事。所以，我们要每天笑笑一点，生活才能更快乐……更幸福。
+                </div>
+                <div class="ec-note"><b>Lỗi ngữ pháp:</b>
+                  <ul style="margin:6px 0 0;padding-left:18px;">
+                    <li>"我不高兴，是……因为" — thiếu kết cấu "……的时候", câu mở đầu sai cấu trúc câu điều kiện thời gian (cấu trúc nền tảng bắt buộc nắm chắc ở trình độ này).</li>
+                    <li>"不高性" — nhầm lẫn 兴 (xìng) và 性 (xìng) đồng âm, khiến câu vô nghĩa tại vị trí đó.</li>
+                    <li>"好吃的东西一定使你更…… 更舒服" — dùng "使" nhưng bỏ lửng, không hoàn chỉnh cấu trúc "使 + tân ngữ + tính từ", câu bị gãy.</li>
+                    <li>"生活……每个人生活，有高兴的事" — thiếu "都", lặp từ "生活" 2 lần do tự sửa giữa chừng, câu không đạt chuẩn ngữ pháp chủ ngữ–vị ngữ.</li>
+                    <li>"我们要每天笑笑一点" — sai cấu trúc, động từ lặp "笑笑" không kết hợp được với "一点" theo cách này; đúng phải là "多笑一笑" hoặc "笑一笑".</li>
+                  </ul>
+                </div>
+                <div class="ec-note"><b>Lỗi phát âm:</b> 事（情） — thanh 4 bị phát âm nhầm thành thanh 2 hầu hết các lần xuất hiện trong bài. Ngoài ra bài nói có khá nhiều khoảng ngập ngừng (……), ảnh hưởng trực tiếp đến độ lưu loát khi trình bày.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="part-row"><b>Câu 27</b></div>
+          <div class="error-cards stacked">
+            <div class="error-card partial">
+              <div class="ec-top"><span class="ec-num">Câu 27</span><span class="ec-badge">11/20 điểm</span></div>
+              <div class="ec-body">
+                <div class="ec-note"><b>Bài gốc học sinh nói:</b><br>
+                我对跑步很感兴趣，所以每天我都去公园跑步。第一，跑步让我身体更健康，心情也更快乐。第二，跑步时，我能见面很多邻居，跟他们聊天，我认为很快乐。第三，跑步以后，我回家……我也能吃……更多东西。妈妈也很喜欢…… 我去……跑步。第四……嗯……终于…… 终于……我... 觉得... 终于... 我觉得去跑步... 还... 能... 所以我每天都去... 跑
+                </div>
+                <div class="ec-note"><b>Lỗi ngữ pháp (chấm chặt):</b>
+                  <ul style="margin:6px 0 0;padding-left:18px;">
+                    <li>"我能见面很多邻居" — <b>sai cấu trúc ngữ pháp</b>. 见面 là ly hợp từ (离合词), tuyệt đối không được mang tân ngữ trực tiếp phía sau. Bắt buộc sửa thành "能见到很多邻居" hoặc "能跟很多邻居见面".</li>
+                    <li>"跟他们聊天，我认为很快乐" — <b>dùng sai từ</b>. "认为" chỉ dùng cho nhận định/quan điểm khách quan, không dùng để diễn tả cảm xúc chủ quan; phải dùng "我觉得很快乐". Đáng chú ý là ngay câu mở đầu học sinh đã dùng đúng "对……很感兴趣" nhưng lại lặp lỗi tương tự (nhầm nhóm động từ chỉ cảm nhận) ngay sau đó — cho thấy kiến thức chưa vững, không phải lỗi bất cẩn đơn lẻ.</li>
+                    <li>"妈妈也很喜欢…… 我去……跑步" — <b>câu không hoàn chỉnh</b>, bị ngắt quãng giữa chủ ngữ và động từ khiến cấu trúc câu bị gãy, không thể tính là một câu đúng ngữ pháp dù đoán được ý định là "妈妈也很喜欢我去跑步".</li>
+                  </ul>
+                </div>
+                <div class="ec-note"><b>Tính hoàn chỉnh của câu trả lời — lỗi nghiêm trọng nhất:</b> học sinh tự đặt ra cấu trúc 4 điểm ("第一…第二…第三…第四") nhưng <b>không hoàn thành điểm thứ 4</b> — toàn bộ đoạn cuối chỉ là các từ đệm rời rạc ("嗯", "终于", "还", "能"...) không tạo thành câu có nghĩa. Theo tiêu chí chấm chặt, một câu trả lời tự phá vỡ cấu trúc mình đề ra và kết thúc không có nội dung được xem là <b>không hoàn thành nhiệm vụ giao tiếp</b> — đây là lỗi nặng nhất trong bài, không thể xem là lỗi phụ, vì nó ảnh hưởng trực tiếp đến tiêu chí "hoàn chỉnh nội dung" chiếm tỷ trọng lớn trong thang điểm HSKK.</div>
+                <div class="ec-note"><b>Lưu loát:</b> tần suất ngập ngừng (……, ...) rất cao, đặc biệt dày đặc ở đoạn cuối — vượt xa mức chấp nhận được của bài nói trình độ Sơ cấp, trừ điểm đáng kể ở tiêu chí lưu loát.</div>
+              </div>
+            </div>
+          </div>
+          <div class="callout"><span class="ci">⚠️</span><span>Lưu ý cho học sinh: đây là lỗi cần khắc phục gấp — <b>không được để câu trả lời bỏ dở</b>. Nếu không nghĩ ra đủ ý theo cấu trúc đã nêu, nên dừng ở số ý đã có (ví dụ chỉ nói "第一…第二…第三" rồi kết luận) thay vì mở thêm ý mà không triển khai được — giám khảo chấm chặt sẽ trừ điểm hoàn chỉnh rất nặng cho lỗi này. Ngoài ra bắt buộc phân biệt rõ <b>认为</b> (nhận định) và <b>觉得</b> (cảm nhận), và ghi nhớ <b>见面</b> là ly hợp từ không mang tân ngữ trực tiếp — đây là lỗi ngữ pháp cơ bản không được phép sai ở trình độ này.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <footer>Báo cáo được tạo bởi giáo viên Hà Thái · Cập nhật khi có dữ liệu chấm bài mới</footer>
+</div>
+
+<script>
+  // Sub tab switching (HSK / HSKK)
+  document.querySelectorAll('.subtab').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const student = btn.dataset.student;
+      const sub = btn.dataset.sub;
+      const container = btn.closest('.folder');
+      container.querySelectorAll('.subtab').forEach(b=>b.classList.remove('active'));
+      container.querySelectorAll('.sub-panel').forEach(p=>p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(student+'-'+sub).classList.add('active');
+    });
+  });
+
+  // Auto-fill today's date
+  document.getElementById('meta-date').textContent = new Date().toLocaleDateString('vi-VN');
+</script>
+</body>
+</html>
